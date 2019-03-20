@@ -11,7 +11,7 @@ from urllib import parse
 
 from handlelog import Logger
 
-infologger = Logger('/mnt/data/soucangflask/all.log',level='info')
+# infologger = Logger('/mnt/data/soucangflask/all.log',level='info')
 errorlogger = Logger('/mnt/data/soucangflask/error.log',level='error')
 
 errortime = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
@@ -113,8 +113,8 @@ def blog():
     #获取分类
     types_baidu = conn.type.find_one({'id':blogid,'state':0})
     types_people = conn.type.find_one({'id':blogid,'state':1})
-    infologger.logger.info('types_baidu',types_baidu)
-    infologger.logger.info('types_people',types_people)
+    # infologger.logger.info('types_baidu',types_baidu)
+    # infologger.logger.info('types_people',types_people)
     if types_baidu:
         if 'content' in types_baidu.keys() and types_baidu['content']:
             typebd = ','.join(types_baidu['content'])
@@ -148,9 +148,9 @@ def blog():
     labels_people = conn.label.find_one({'id':blogid,'state':1})
     #nlp标签（夏侯麒麟添加）
     labels_nlp = conn.label.find_one({'id':blogid,'state':2})
-    infologger.logger.info('labels_baidu',labels_baidu)
-    infologger.logger.info('labels_people',labels_people)
-    infologger.logger.info('labels_nlp',labels_nlp)
+    # infologger.logger.info('labels_baidu',labels_baidu)
+    # infologger.logger.info('labels_people',labels_people)
+    # infologger.logger.info('labels_nlp',labels_nlp)
     if labels_baidu:
         if 'content' in labels_baidu.keys() and labels_baidu['content']:
             contentbd = ','.join(labels_baidu['content'])
@@ -207,13 +207,13 @@ def blog():
         para = json.dumps(need_list)
     else:
         para = json.dumps([])
-    infologger.logger.info('paragraphs',paragraphs)
+    # infologger.logger.info('paragraphs',paragraphs)
 
     #获取实体词
     entity_people = conn.entity.find_one({'id':blogid,'state':1})
     entity_nlp = conn.entity.find_one({'id':blogid,'state':2})
-    infologger.logger.info('entity_people',entity_people)
-    infologger.logger.info('entity_nlp',entity_nlp)
+    # infologger.logger.info('entity_people',entity_people)
+    # infologger.logger.info('entity_nlp',entity_nlp)
     if entity_nlp:
         if 'content' in entity_nlp.keys() and entity_nlp['content']:
             nlpentity = entity_nlp['content']
@@ -248,10 +248,9 @@ def insertdate():
     mongo = db()
     if request.method == "POST":
         try:
-            url = request.args.get('origin_url')
-            blogid = url[-32:]
+            blogid = request.args.get('blogid')
             data = request.json
-            infologger.logger.info('data',data)
+            # infologger.logger.info('data',data)
             #实体入库逻辑
             if 'words' in data.keys():
                 entity_data = data['words']

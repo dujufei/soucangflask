@@ -295,7 +295,8 @@
                 $('submit').innerHTML = "提交失败, 请重试"
             }
         });
-        xmlhttp.open("POST", "http://47.92.73.83:8993/insertdata?origin_url=" + window.location.href);
+{#        xmlhttp.open("POST", "http://47.92.73.83:8993/insertdata?origin_url=" + window.location.href);#}
+        xmlhttp.open("POST", "http://127.0.0.1:5000/insertdata?origin_url=" + window.location.href);
         xmlhttp.setRequestHeader("Content-Type", "application/json");
         xmlhttp.send(j);
     }

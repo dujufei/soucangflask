@@ -10,5 +10,6 @@ Desktop.ini
 *.egg-info
 *.swo
 *.swp
+*.idea
 dist
 build
