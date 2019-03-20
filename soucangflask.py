@@ -11,8 +11,8 @@ from urllib import parse
 
 from handlelog import Logger
 
-# infologger = Logger('/mnt/data/all.log',level='info')
-# errorlogger = Logger('/mnt/data/error.log',level='error')
+infologger = Logger('/mnt/data/soucangflask/all.log',level='info')
+errorlogger = Logger('/mnt/data/soucangflask/error.log',level='error')
 
 errortime = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
 
@@ -46,7 +46,6 @@ def hello():
     rdb = redisdb()
     #从连接中获取type信息
     wenzhangtype = request.args.get('class')
-    print('11111111111111111111111111',wenzhangtype)
     #从reids中获取实体标签分类数量
     countentity = int(rdb.get('entity_count'))
     countlable = int(rdb.get('countlable'))
@@ -114,8 +113,8 @@ def blog():
     #获取分类
     types_baidu = conn.type.find_one({'id':blogid,'state':0})
     types_people = conn.type.find_one({'id':blogid,'state':1})
-    # infologger.logger.info('types_baidu',types_baidu)
-    # infologger.logger.info('types_people',types_people)
+    infologger.logger.info('types_baidu',types_baidu)
+    infologger.logger.info('types_people',types_people)
     if types_baidu:
         if 'content' in types_baidu.keys() and types_baidu['content']:
             typebd = ','.join(types_baidu['content'])
@@ -149,9 +148,9 @@ def blog():
     labels_people = conn.label.find_one({'id':blogid,'state':1})
     #nlp标签（夏侯麒麟添加）
     labels_nlp = conn.label.find_one({'id':blogid,'state':2})
-    # infologger.logger.info('labels_baidu',labels_baidu)
-    # infologger.logger.info('labels_people',labels_people)
-    # infologger.logger.info('labels_nlp',labels_nlp)
+    infologger.logger.info('labels_baidu',labels_baidu)
+    infologger.logger.info('labels_people',labels_people)
+    infologger.logger.info('labels_nlp',labels_nlp)
     if labels_baidu:
         if 'content' in labels_baidu.keys() and labels_baidu['content']:
             contentbd = ','.join(labels_baidu['content'])
@@ -208,13 +207,13 @@ def blog():
         para = json.dumps(need_list)
     else:
         para = json.dumps([])
-    # infologger.logger.info('paragraphs',paragraphs)
+    infologger.logger.info('paragraphs',paragraphs)
 
     #获取实体词
     entity_people = conn.entity.find_one({'id':blogid,'state':1})
     entity_nlp = conn.entity.find_one({'id':blogid,'state':2})
-    # infologger.logger.info('entity_people',entity_people)
-    # infologger.logger.info('entity_nlp',entity_nlp)
+    infologger.logger.info('entity_people',entity_people)
+    infologger.logger.info('entity_nlp',entity_nlp)
     if entity_nlp:
         if 'content' in entity_nlp.keys() and entity_nlp['content']:
             nlpentity = entity_nlp['content']
@@ -252,7 +251,7 @@ def insertdate():
             url = request.args.get('origin_url')
             blogid = url[-32:]
             data = request.json
-            # infologger.logger.info('data',data)
+            infologger.logger.info('data',data)
             #实体入库逻辑
             if 'words' in data.keys():
                 entity_data = data['words']
@@ -270,7 +269,7 @@ def insertdate():
                     try:
                         mongo.entity.update({'id':blogid,'state':1},people_item_entity,True)
                     except Exception as e:
-                        # errorlogger.logger.error(e)
+                        errorlogger.logger.error(e)
                         return '{"code":0,"message":"入库失败"}'
                 else:
                     mongo.entity.remove({'id':blogid,'state':1})
@@ -279,7 +278,7 @@ def insertdate():
                     try:
                         mongo.entity.update({'id':blogid,'state':2},nlp_item_entity,True)
                     except Exception as e:
-                        # errorlogger.logger.error(e)
+                        errorlogger.logger.error(e)
                         return '{"code":0,"message":"入库失败"}'
                 else:
                     mongo.entity.remove({'id':blogid,'state':2})
@@ -306,7 +305,7 @@ def insertdate():
                     try:
                         mongo.label.update({'id':blogid,'state':2},nlp_item_label,True)
                     except Exception as e:
-                        # errorlogger.logger.error(e)
+                        errorlogger.logger.error(e)
                         return '{"code":0,"message":"入库失败"}'
                 else:
                     mongo.label.remove({'id':blogid,'state':2})
@@ -316,7 +315,7 @@ def insertdate():
                     try:
                         mongo.label.update({'id':blogid,'state':1},people_item,True)
                     except Exception as e:
-                        # errorlogger.logger.error(e)
+                        errorlogger.logger.error(e)
                         return '{"code":0,"message":"入库失败"}'
                     print(people_item)
                 else:
@@ -327,7 +326,7 @@ def insertdate():
                     try:
                         mongo.label.update({'id':blogid,'state':0},baidu_item,True)
                     except Exception as e:
-                        # errorlogger.logger.error(e)
+                        errorlogger.logger.error(e)
                         return '{"code":0,"message":"入库失败"}'
                 else:
                     mongo.label.remove({'id':blogid,'state':0})
@@ -352,7 +351,7 @@ def insertdate():
                     try:
                         mongo.type.update({'id':blogid,'state':1},people_item_type,True)
                     except Exception as e:
-                        # errorlogger.logger.error(e)
+                        errorlogger.logger.error(e)
                         return '{"code":0,"message":"入库失败"}'
                 else:
                     mongo.type.remove({'id':blogid,'state':1})
@@ -361,7 +360,7 @@ def insertdate():
                     try:
                         mongo.type.update({'id':blogid,'state':0},baidu_item_type,True)
                     except Exception as e:
-                        # errorlogger.logger.error(e)
+                        errorlogger.logger.error(e)
                         return '{"code":0,"message":"入库失败"}'
                     # print(baidu_item_type)
                 else:
@@ -389,14 +388,14 @@ def insertdate():
                                 crawltime = errortime
                             mongo.segment.update({'id':blogid},{'id':blogid,'desc':paragraphs_desc,'url':p['url'],'state':1,'source':p['source'],'content':paragraphs_content,'crawl_time':crawltime,'update_time':errortime},True)
                     except Exception as e:
-                        # errorlogger.logger.error(e)
+                        errorlogger.logger.error(e)
                         return '{"code":0,"message":"入库失败"}'
                 else:
                     mongo.segment.remove({'id':blogid})
             else:
                 mongo.segment.remove({'id':blogid})
         except Exception as e:
-            # errorlogger.logger.error(e)
+            errorlogger.logger.error(e)
             return '{"code":1,"message":"其他错误"}'
         mongo.web_detail.update({'id':blogid},{'$set':{'sign':1}})
     return '{"code":2,"message":"入库成功"}'
