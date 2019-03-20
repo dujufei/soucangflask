@@ -408,5 +408,5 @@ def care():
 
 if __name__ == '__main__':
     # app.run(threaded=True)
-    app.run(threaded=True,host='0.0.0.0',port=8993)
+    app.run(threaded=True,host='172.26.26.131',port=8993)
     # app.run()
