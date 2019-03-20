@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/uikit.min.css">
+    <link rel="stylesheet" href="/static/css/uikit.gradient.min.css">
+    <link rel="stylesheet" href="/static/layui/layui/css/layui.css" />
+    <script src="/static/js/jquery.min.js"></script>
+
+
+    {% block beforehead %}<!-- before head  -->{% endblock %}
+</head>
+<body>
+<div class="uk-container uk-container-center" style="background-color: white">
+    <a href="/" class="uk-navbar-brand" style="margin-left: -19px;"></a>
+    <ul class="uk-navbar-nav">
+        <li data-url="blogs"><a href="/" style="font-size: 20px"><strong>//</strong></a></li>
+        <li><a target="_blank" href="/?class=baidujingyan" style="font-size: 20px"><strong>百度经验</strong></a></li>
+        <li><a target="_blank" href="/?class=zhihu" style="font-size: 20px"><strong>知乎</strong></a></li>
+        <li><a target="_blank" href="/?class=douban" style="font-size: 20px"><strong>豆瓣</strong></a></li>
+    </ul>
+</div>
+<!-- content -->
+{% block content %}
+{% endblock %}<!-- // content -->
+</body>
+</html>

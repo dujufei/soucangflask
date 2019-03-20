@@ -1,0 +1,450 @@
+
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style>
+        .content {
+            width: 50%;
+            margin: 0 auto;
+        }
+
+        .content img {
+            width: 100% !important;
+        }
+
+        #pop {
+            max-width: 500px;
+            z-index: 10000;
+            background-color: #fcfbf7;
+            border-radius: 5px 5px 0 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: none;
+        }
+
+        #pop-content {
+            background-color: #fcfbf7;
+            margin: 10px;
+            width: 280px;
+            border: none;
+            outline: none;
+            overflow-y: visible;
+            resize: none !important;
+            font-size: 12px;
+            line-height: 18px;
+            word-wrap: break-word;
+        }
+
+        #pop-desc {
+            min-height: 50px;
+            background-color: #fcfbf7;
+            margin: 10px;
+            padding-top: 10px;
+            width: 280px;
+            border: none;
+            outline: none;
+            overflow-y: visible;
+            resize: none !important;
+            font-size: 12px;
+            line-height: 18px;
+            word-wrap: break-word;
+            border-top: 1px solid #ECECE7;
+        }
+
+        .pop-title {
+            display: block;
+            text-align: center;
+            font-size: 16px;
+            line-height: 30px;
+            height: 30px;
+            color: #ffffff;
+            border-radius: 5px 5px 0 0;
+            background: #f1c40f;
+        }
+
+        .pop-footer {
+            height: 30px;
+            padding: 5px;
+            border-top: 1px solid #ECECE7;
+            background: transparent none;
+        }
+
+        .footer-btn {
+            height: 20px;
+            width: 50px;
+            border-radius: 2px;
+            font-size: 12px;
+            text-align: center;
+            line-height: 20px;
+            margin: 4px 5px 4px 10px;
+            float: right;
+            text-decoration: none;
+        }
+
+        #paragraph {
+            border: 1px solid #b4db66;
+            color: #b4db66;
+        }
+
+        #category {
+            border: 1px solid #1da1f2;
+            color: #1da1f2;
+        }
+
+        #label {
+            border: 1px solid #f1c40f;
+            color: #f1c40f;
+        }
+
+        #word {
+            border: 1px solid #ea5a5a;
+            color: #ea5a5a;
+        }
+
+        /* 两侧 */
+        .fixed-tool {
+            position: fixed;
+            height: 100%;
+            display: block;
+            z-index: 4;
+            width: 22%;
+            overflow: auto;
+        }
+
+        .left-fixed {
+            left: 2%;
+        }
+
+        .right-fixed {
+            right: 2%;
+        }
+
+        .fixed-tool .tool-content {
+            margin-top: 5%;
+        }
+
+        .tool-title {
+            display: block;
+            text-align: center;
+            font-size: 14px;
+            line-height: 24px;
+            height: 24px;
+            color: #ffffff;
+            border-radius: 5px 5px 0 0;
+        }
+
+        .tool-word {
+            background: #ea5a5a;
+        }
+
+        .tool-label {
+            background: #f1c40f;
+        }
+
+        .tool-category {
+            background: #1da1f2;
+        }
+
+        .tool-paragraph {
+            background: #b4db66;
+        }
+
+        .tool-text {
+            height: 26%;
+            background-color: #fcfbf7;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            outline: none;
+            overflow-y: visible;
+            resize: none !important;
+            font-size: 12px;
+            line-height: 18px;
+            word-wrap: break-word;
+        }
+
+        #paragraph-text {
+            height: 80%;
+        }
+
+        .submit-btn {
+            height: 40px;
+            display: block;
+            background: #28a745;
+            border-radius: 2px;
+            font-size: 16px;
+            color: #ffffff;
+            text-align: center;
+            line-height: 40px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body onMouseup="getSelectedContents()">
+<div id="pop">
+    <span class="pop-title">阅 粒</span>
+    <p id="pop-content"></p>
+    <textarea id="pop-desc" placeholder="此处可添加描述内容..."></textarea>
+    <div class="pop-footer">
+        <a href="javascript:void(0)" class="footer-btn" id="paragraph">片段</a>
+        <a href="javascript:void(0)" class="footer-btn" id="category">分类</a>
+        <a href="javascript:void(0)" class="footer-btn" id="label">标签</a>
+        <a href="javascript:void(0)" class="footer-btn" id="word">实体词</a>
+    </div>
+</div>
+<div class="left-fixed fixed-tool">
+    <div class="tool-content">
+        <span class="tool-title tool-word">实体词</span>
+        <textarea class="tool-text" placeholder="请选择内容..." id="word-text">{{ entitys }}</textarea>
+    </div>
+    <div class="tool-content">
+        <span class="tool-title tool-label">标 签</span>
+        <textarea class="tool-text" placeholder="请选择内容..." id="label-text">{{ labels }}</textarea>
+    </div>
+    <div class="tool-content">
+        <span class="tool-title tool-category">分 类</span>
+        <textarea class="tool-text" placeholder="请选择内容..." id="category-text">{{ types }}</textarea>
+    </div>
+</div>
+<div class="right-fixed fixed-tool">
+    <div class="tool-content">
+        <span class="tool-title tool-paragraph">片 段</span>
+        <textarea class="tool-text" placeholder="请选择内容..." id="paragraph-text">{{ para }}</textarea>
+    </div>
+    <div class="tool-content">
+        <a href="javascript:void(0)" class="submit-btn" id="submit">提 交</a>
+    </div>
+</div>
+<div class="content">
+    <h1>{{ content.title }}</h1>
+    {{ content.release_date }}
+    {{ content.content_html | safe }}
+{#    <p> 我们知道，一门技术你只要花时间去看，是很快可以搞懂的，但是架构例外，设计模式作为架构的基础，也没法很快搞懂。设计模式的书都是大同小异的，书中都是理论结合一个个小例子来阐述设计模式，但是即便你把整本书全看懂了，到实际中依然会不知所措。<br /><br />有些设计模式比较像，比如工厂和建造者模式，再比如代理模式和中介者模式，如何正确地区分它们？<br /><br />那么多设计模式，如何在工作中使用？我怎么知道用哪种好呢？<br /><br />本篇文章我来和大家谈谈，首先有几个心得，大家要赞同：<br />1：设计没有对错，只有好坏之分<br />2：个人要形成自己的架构观<br />3：设计的目标总是正向收益<br />4：设计的过程总会带来负面收益<br /><br />一个没有对错的东西，就不存在标准答案，所以一个架构师也应该有自己的架构立场。两个优秀的架构师，针对同一个东西，他们所产出的设计可能差异很大，甚至对立，但是他们的设计可能都是优秀的。<br /><br />为了掌握设计模式，需要经过如下步骤。<br /><br />首先要掌握六大原则的精髓：单一职责、里式替换、依赖反转、接口隔离、迪米特法则、合成复用。<br /><br />最重要的，要理解设计模式的精髓：开闭原则，“对扩展开放，对修改关闭”这句话非常重要。<br /><br />然后找本设计模式的书，比如《大话设计模式》、《head#}
+{#        first#}
+{#        设计模式》，搞懂23种常用的设计模式，边看书边思考。大家可以发现，23中设计模式中，很多模式都是不完美的，有些甚至还违背了6大基本原则，所以生搬硬套设计模式行不通，这也是架构不能速成的原因。但是在学习过程中，你又必须从生搬硬套开始，逐步完成升华。<br /><br />最后，尝试在自己项目的局部模块生搬硬套一些设计模式，然后列出这样设计的好处和坏处，逐步思考逐步改进，慢慢找到属于自己的感觉，形成自己的设计观，这个过程只能靠自己体会。到最后你会发现，本文前面提出的问题其实不是问题，因为那根本不重要。<br /><br />我给大家一些建议，评价一个设计好坏的主要因素是：<br />1：开闭性是否良好，这个设计是否可以应对未来半年到一年内的业务变动，如果每次业务变动都需要修改设计核心代码，很显然，这个设计失败了。<br /><br />2：可维护性是否良好，或者说可读性是否良好，如果一个设计太过晦涩难懂，那一旦设计者离职，后续的代码将难以维护。记住，设计的目的是让代码更清晰易懂，而不是为了装逼。<br /><br />3：性能，设计再牛逼，性能很差，这也是一个垃圾的设计。<br /><br />最终，你应该达到高手无招的地步，你设计了一个方案，是个四不像，很难说出它是哪一种设计模式，但是它却是一个好的设计方案，这个时候你就出山了。#}
+{#    </p>#}
+{#    <p>#}
+{#        <img#}
+{#                src="https://images.zsxq.com/Fk92VFSke9khbBli8KMS59PrHBlD?imageMogr2/auto-orient/thumbnail/800x/format/jpg/blur/1x0/quality/75&amp;e=1906272000&amp;token=kIxbL07-8jAj8w1n4s9zv64FuZZNEATmlU_Vm6zD:g_oVYcB3xlG4EKrInf8_1SyWATw=" />#}
+{#    </p>#}
+{#    <p>分割线</p>#}
+{#    <div>#}
+{#        <img#}
+{#                src="https://images.zsxq.com/Fk92VFSke9khbBli8KMS59PrHBlD?imageMogr2/auto-orient/thumbnail/800x/format/jpg/blur/1x0/quality/75&amp;e=1906272000&amp;token=kIxbL07-8jAj8w1n4s9zv64FuZZNEATmlU_Vm6zD:g_oVYcB3xlG4EKrInf8_1SyWATw=" />#}
+{#    </div>#}
+{#</div>#}
+{#<div class="content">#}
+{#    <br />#}
+    源网页地址：<a href="{{ content.article_url }}" id="origin_url">{{ content.article_url }}</a>
+</div>
+</body>
+
+<script language="javascript" type="text/javascript">
+
+    var current_content = ''
+
+    function $(id) { return document.getElementById(id) }
+
+    setTimeout(() => {
+        formatText('word-text', $('word-text').value);
+    formatText('label-text', $('label-text').value);
+    formatText('category-text', $('category-text').value);
+    formatText('paragraph-text', $('paragraph-text').value);
+    }, 100);
+
+    $("word").onclick = function () {
+        setTextarea('word-text');
+    }
+    $("label").onclick = function () {
+        setTextarea('label-text');
+    }
+    $("category").onclick = function () {
+        setTextarea('category-text');
+    }
+    $("paragraph").onclick = function () {
+        setTextarea('paragraph-text');
+    }
+    $("submit").onclick = function () {
+        result = {};
+        hasError1 = getTextarea(result, 'word-text', 'words');
+        hasError2 = getTextarea(result, 'label-text', 'labels');
+        hasError3 = getTextarea(result, 'category-text', 'categories');
+        hasError4 = getTextarea(result, 'paragraph-text', 'paragraphs');
+        if (hasError1 || hasError2 || hasError3 || hasError4) {
+            return
+        }
+        var j = JSON.stringify(result);
+        console.log(j);
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.addEventListener("load", function reqListener() {
+            if (this.status == 200) {
+                rep = JSON.parse(this.responseText)
+                if (rep["code"] == 2) {
+                    $('submit').innerHTML = rep["message"]
+                    setTimeout(() => {
+                        window.location.reload();
+                }, 1000);
+                } else {
+                    $('submit').innerHTML = rep["message"] + ", 请重试"
+                }
+            } else {
+                $('submit').innerHTML = "提交失败, 请重试"
+            }
+        });
+        xmlhttp.open("POST", "http://0.0.0.0:5000/insertdata?origin_url=" + window.location.href);
+        xmlhttp.setRequestHeader("Content-Type", "application/json");
+        xmlhttp.send(j);
+    }
+
+    function formatText(id) {
+        content = $(id).value;
+        if (!content) {
+            return
+        }
+        value = $(id).value;
+        $(id).value = JSON.stringify(JSON.parse(value), null, 2);
+    }
+
+    function setTextarea(id) {
+        if (!current_content) {
+            return
+        }
+        var arr = [];
+        var value = $(id).value;
+        if (value) {
+            var arr = JSON.parse(value)
+        }
+        if (id == 'paragraph-text') {
+            arr.push({
+                'desc': $('pop-desc').value,
+                'source': '人工',
+                'url': $('origin_url').innerHTML,
+                'content': current_content,
+            })
+        } else {
+            arr.push({
+                'desc': $('pop-desc').value,
+                'source': '人工',
+                'content': current_content,
+            })
+        }
+        var j = JSON.stringify(arr, null, 2);
+        $(id).value = j;
+    }
+
+    function getTextarea(result, id, key) {
+        var value = $(id).value;
+        if (value) {
+            try {
+                result[key] = JSON.parse(value);
+            } catch (error) {
+                if (key == 'words') {
+                    $('submit').innerHTML = "实体词有误，请重试"
+                } else if (key == 'labels') {
+                    $('submit').innerHTML = "标签有误，请重试"
+                } else if (key == 'categories') {
+                    $('submit').innerHTML = "分类有误，请重试"
+                } else if (key == 'paragraphs') {
+                    $('submit').innerHTML = "片段有误，请重试"
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function getSelectedContents() {
+        var event = event || window.event;
+        var x = event.clientX;
+        var y = event.clientY;
+        select_content = ''
+        if (window.getSelection) { // chrome,firefox,opera
+            select = window.getSelection()
+            if (select.rangeCount != 0) {
+                var range = select.getRangeAt(0);
+                var container = document.createElement('div');
+                container.appendChild(range.cloneContents());
+                select_content = getContent(container)
+            }
+        } else if (document.getSelection) { //其他
+            select = window.getSelection()
+            if (select.rangeCount != 0) {
+                var range = select.getRangeAt(0);
+                var container = document.createElement('div');
+                container.appendChild(range.cloneContents());
+                select_content = getContent(container)
+            }
+        } else if (document.selection) { //IE// lao8.org
+            select_content = getContent(document.selection.createRange().htmlText);
+        }
+        if (select_content) {
+            showBox(x, y, select_content);
+        }
+    }
+
+    document.onmousedown = function (event) {
+        var event = event || window.event;
+        var targetId = event.target ? event.target.id : event.srcElement.id;
+        if (!targetId.startsWith('pop')) {
+            setTimeout(function () {
+                $('pop').style.display = "none";
+                $('pop-desc').value = "";
+            }, 200)
+            if (window.getSelection) {
+                if (window.getSelection().empty) {  // Chrome
+                    window.getSelection().empty();
+                } else if (window.getSelection().removeAllRanges) {  // Firefox
+                    window.getSelection().removeAllRanges();
+                }
+            } else if (document.selection) {  // IE?
+                document.selection.empty();
+            }
+        }
+    }
+
+    function showBox(mousex, mousey, contentText) {
+        var scrollTop = window.pageYOffset
+            || document.documentElement.scrollTop
+            || document.body.scrollTop
+            || 0;
+        var scrollLeft = window.pageXOffset
+            || document.documentElement.scrollLeft
+            || document.body.scrollLeft
+            || 0;
+        setTimeout(function () {
+            $('pop').style.left = (scrollLeft + mousex) + "px";
+            $('pop').style.top = (scrollTop + mousey) + "px";
+            $('pop').style.display = "block";
+            current_content = contentText;
+            $('pop-content').innerHTML = contentText;
+        }, 200);
+    }
+
+    function getContent(container) {
+        text = getDetail(container, '');
+        return text;
+    }
+
+    function getDetail(container, text) {
+        if (container.childNodes.length > 0) {
+            container.childNodes.forEach(element => {
+                text = getDetail(element, text);
+        });
+        } else {
+            if (container.textContent) {
+                text += container.textContent;
+            }
+            if (container.src) {
+                text += container.src;
+            }
+        }
+        return text;
+    }
+
+</script>
+
+</html>

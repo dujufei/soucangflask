@@ -1,0 +1,80 @@
+{% extends '__base__.html' %}
+
+{% block meta %}
+{% endblock %}
+{% block title %}{% endblock %}
+
+{% block beforehead %}
+    <style>
+        .uk-article:last-child{
+            border-bottom-color: #F2F2F2;
+        }
+        .uk-article+.uk-article {
+            padding-top: 0px;
+            margin-top: 0px;
+            /*border-top: 1px solid #ddd;*/
+        }
+        .tab{
+            display: inline-block;
+            font-size: 14px;
+            line-height: 14px;
+            padding: 5px 8px 5px 8px;
+            margin-right: 5px;
+            border-radius: 3px;
+            /*color: #555;*/
+        }
+        .uk-container{
+            max-width: 1100px;
+        }
+        .el-upload__input{
+            display: none !important;
+        }
+        .uk-grid:not(.uk-grid-preserve)>*>.uk-panel+.uk-panel {
+            margin-top: 1px;
+        }
+    </style>
+    <script src="/static/js/newvue.js"></script>
+    <link rel="stylesheet" href="/static/css/index.css" />
+    <script src="/static/js/index.js"></script>
+
+{% endblock %}
+
+{% block content %}
+
+    <div class=".uk-container-center" style="position: relative;text-align: center">
+        {% for blog in result %}
+            <div class="cell item" style="background-position: 0 bottom;background-repeat: repeat-x;padding: 10px;font-size: 14px;line-height: 120%;text-align: left;border-bottom: 1px solid #e2e2e2;background-color: white">
+                <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                    <tbody><tr>
+                        <td width="10"></td>
+                        <td width="auto" valign="middle"><span class="item_title"><a href="/blog/?class={{ classtype }}&blogid={{ blog.id }}" target="_blank" style="color: #778087;text-decoration: none;word-break: break-all;font-size: 16px;line-height: 130%;text-shadow: 0 1px 0 #fff;">{{ blog.title }}</a></span>
+{#                            <div class="sep5" style="height: 5px">{{ blog.source }}</div>#}
+                            <!--<span class="topic_info" style="color: #ccc;font-size: 12px;line-height: 200%"><div class="votes"></div><a class="node" href="#" style="background-color: #f5f5f5;font-size: 12px;line-height: 12px;display: inline-block;padding: 4px 4px 4px 4px;border-radius: 2px;text-decoration: none;color: #999">{{ blog.summary }}</a> &nbsp;•&nbsp; <strong style="font-weight: bold;color: black">{{blog.wechat_id}}</strong></span>-->
+                        </td>
+                        {% if blog.sign == 1 %}
+                            <td width="70" align="right" valign="middle">
+                                <span class="layui-badge"></span>
+                            </td>
+                        {% endif %}
+                    </tr>
+                    </tbody></table>
+            </div>
+        {% endfor %}
+{#        {%if data != '' %}#}
+        <nav aria-label="Page navigation">
+            <ul class="pager">
+                {% if page.page_index == page.page_count %}
+                    <li><a href="?class={{ classtype }}&page=1">上一页</a></li>
+                {% else %}
+                    <li><a href="?class={{ classtype }}&page={{page.page_index-1}}">上一页</a></li>
+                {% endif %}
+                {% if page.page_index == page.page_count %}
+                    <li><a href="?class={{ classtype }}&page=1">下一页</a></li>
+                {% else %}
+                    <li><a href="?class={{ classtype }}&page={{page.page_index+1}}">下一页</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+        <p style="float: left;margin-top: -20px"><strong><a href="/care/" style="color: green">使用注意</a></strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>文章总数{{ num }}</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>已处理数{{ dealnum }}</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>实体数{{ countentity }}</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>标签数{{ countlable }}</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>分类数{{ counttype }}</strong></p>
+    </div>
+{% endblock %}
