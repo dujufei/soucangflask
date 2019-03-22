@@ -12,7 +12,7 @@ from urllib import parse
 from handlelog import Logger
 
 # infologger = Logger('/mnt/data/soucangflask/all.log',level='info')
-errorlogger = Logger('/mnt/data/soucangflask/error.log',level='error')
+errorlogger = Logger('/mnt/logs/soucangflask/log/errorlog.log',level='error')
 
 errortime = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
 
