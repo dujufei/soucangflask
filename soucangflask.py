@@ -6,13 +6,15 @@ import pymongo
 import urllib
 import json,re,time
 import redis
+import requests
 
 from urllib import parse
 
 from handlelog import Logger
 
 # infologger = Logger('/mnt/data/soucangflask/all.log',level='info')
-errorlogger = Logger('/mnt/logs/soucangflask/log/errorlog.log',level='error')
+# errorlogger = Logger('/mnt/logs/soucangflask/log/errorlog.log',level='error')
+errorlogger = Logger('/Users/zdp/test/soucang.log',level='error')
 
 errortime = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
 
@@ -403,8 +405,20 @@ def insertdate():
 def care():
     return render_template('care.html')
 
+@app.route('/abstract/')
+def abstract():
+    conn = db()
+    blogid = request.args.get('blogid')
+    url = 'http://47.92.73.83:8099/abstract_sever?blogid={}'.format(blogid)
+    content = conn.web_detail.find_one({'id':blogid})['content_html']
+    abscontent = requests.get(url=url).content.decode()
+    return render_template('abstract.html',content=content,abscontent=abscontent)
+
+
+
+
 
 if __name__ == '__main__':
-    # app.run(threaded=True)
-    app.run(threaded=True,host='172.26.26.131',port=8993)
+    app.run(threaded=True)
+    # app.run(threaded=True,host='172.26.26.131',port=8993)
     # app.run()

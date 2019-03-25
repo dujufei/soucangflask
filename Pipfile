@@ -10,6 +10,7 @@ flask = "*"
 flask-cors = "*"
 pymongo = "*"
 redis = "*"
+list = "*"
 
 [requires]
 python_version = "3.7"
