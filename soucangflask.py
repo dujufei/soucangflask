@@ -104,19 +104,23 @@ def blog():
     conn = db()
     blogid = request.args.get('blogid')
     textclass = request.args.get('class')
-    content_np = conn.web_detail.find_one({'id':blogid})['content_np']
+
+    if textclass == "baidujingyan":
+        text = conn.baidujingyan_details.find_one({'id':blogid})
+        content_np = conn.baidujingyan_details.find_one({'id': blogid})['content_np']
+    elif textclass == 'zhihu':
+        text = conn.zhidao_details.find_one({'id':blogid})
+        content_np = conn.zhidao_details.find_one({'id': blogid})['content_np']
+    elif textclass == 'douban':
+        text = conn.douban_details.find_one({'id':blogid})
+        content_np = conn.douban_details.find_one({'id': blogid})['content_np']
+    else:
+        text = conn.web_detail.find_one({'id':blogid})
+        content_np = conn.web_detail.find_one({'id': blogid})['content_np']
     response = json.loads(requests.get(url='http://py.yuedusikao.com:8994/nlp?text={}'.format(content_np)).content.decode())
     nlp_entity = response['entity']['content']
     nlp_label = ','.join(response['label']['content'])
     nlp_type = response['type']['content']
-    if textclass == "baidujingyan":
-        text = conn.baidujingyan_details.find_one({'id':blogid})
-    elif textclass == 'zhihu':
-        text = conn.zhidao_details.find_one({'id':blogid})
-    elif textclass == 'douban':
-        text = conn.douban_details.find_one({'id':blogid})
-    else:
-        text = conn.web_detail.find_one({'id':blogid})
     #获取分类
     types_baidu = conn.type.find_one({'id':blogid,'state':0})
     types_people = conn.type.find_one({'id':blogid,'state':1})
