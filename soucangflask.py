@@ -104,6 +104,11 @@ def blog():
     conn = db()
     blogid = request.args.get('blogid')
     textclass = request.args.get('class')
+    content_np = conn.web_detail.find_one({'id':blogid})['content_np']
+    response = json.loads(requests.get(url='http://py.yuedusikao.com:8994/nlp?text={}'.format(content_np)).content.decode())
+    nlp_entity = response['entity']['content']
+    nlp_label = ','.join(response['label']['content'])
+    nlp_type = response['type']['content']
     if textclass == "baidujingyan":
         text = conn.baidujingyan_details.find_one({'id':blogid})
     elif textclass == 'zhihu':
@@ -137,22 +142,17 @@ def blog():
         typecontent = ''
         typedesc = ''
     if types_people and types_baidu:
-        types = json.dumps([{"content":typecontent,"desc":typedesc,"source":"人工"},{"content":typebd,"source":"百度aip"}])
+        types = json.dumps([{"content":typecontent,"desc":typedesc,"source":"人工"},{"content":typebd,"source":"百度aip"},{"content":nlp_type,"source":"NLP"}])
     elif not types_baidu and types_people:
-        types = json.dumps([{"content":typecontent,"desc":typedesc,"source":"人工"}])
+        types = json.dumps([{"content":typecontent,"desc":typedesc,"source":"人工"},{"content":nlp_type,"source":"NLP"}])
     elif not types_people and types_baidu:
-        types = json.dumps([{"content":typebd,"source":"百度aip"}])
+        types = json.dumps([{"content":typebd,"source":"百度aip"},{"content":nlp_type,"source":"NLP"}])
     else:
-        types = json.dumps([])
+        types = json.dumps([{"content":nlp_type,"source":"NLP"}])
 
     #获取标签
     labels_baidu = conn.label.find_one({'id':blogid,'state':0})
     labels_people = conn.label.find_one({'id':blogid,'state':1})
-    #nlp标签（夏侯麒麟添加）
-    labels_nlp = conn.label.find_one({'id':blogid,'state':2})
-    # infologger.logger.info('labels_baidu',labels_baidu)
-    # infologger.logger.info('labels_people',labels_people)
-    # infologger.logger.info('labels_nlp',labels_nlp)
     if labels_baidu:
         if 'content' in labels_baidu.keys() and labels_baidu['content']:
             contentbd = ','.join(labels_baidu['content'])
@@ -172,31 +172,15 @@ def blog():
     else:
         contentpp = ''
         desc = ''
-    #nlp_label（夏侯麒麟添加）
-    if labels_nlp:
-        if 'content' in labels_nlp.keys() and labels_nlp['content']:
-            contentnlp = ','.join(labels_nlp['content'])
-        else:
-            contentnlp = ''
-    else:
-        contentnlp = ''
 
-    if labels_people and labels_baidu and labels_nlp:
-        labels = json.dumps([{"content":contentpp,"desc":desc,"source":"人工"},{"content":contentbd,"source":"百度aip"},{"content":contentnlp,"source":"nlp"}])
-    elif labels_people and labels_nlp and not labels_baidu:
-        labels = json.dumps([{"content":contentpp,"desc":desc,"source":"人工"},{"content":contentnlp,"source":"nlp"}])
-    elif labels_people and labels_baidu and not labels_nlp:
-        labels = json.dumps([{"content":contentpp,"desc":desc,"source":"人工"},{"content":contentbd,"source":"百度aip"}])
-    elif labels_baidu and labels_nlp and not labels_people:
-        labels = json.dumps([{"content":contentbd,"source":"百度aip"},{"content":contentnlp,"source":"nlp"}])
-    elif not labels_people and not labels_nlp and labels_baidu:
-        labels = json.dumps([{"content":contentbd,"source":"百度aip"}])
-    elif not labels_people and not labels_baidu and labels_nlp:
-        labels = json.dumps([{"content":contentnlp,"source":"nlp"}])
-    elif not labels_baidu and not labels_nlp and labels_people:
-        labels = json.dumps([{"content":contentpp,"desc":desc,"source":"人工"}])
+    if labels_people and labels_baidu:
+        labels = json.dumps([{"content":contentpp,"desc":desc,"source":"人工"},{"content":contentbd,"source":"百度aip"},{"content":nlp_label,"source":"NLP"}])
+    elif labels_people and  not labels_baidu:
+        labels = json.dumps([{"content":contentpp,"desc":desc,"source":"人工"},{"content":nlp_label,"source":"NLP"}])
+    elif labels_baidu and not labels_people:
+        labels = json.dumps([{"content":contentbd,"source":"百度aip"},{"content":nlp_label,"source":"NLP"}])
     else:
-        labels = json.dumps([])
+        labels = json.dumps([{"content":nlp_label,"source":"NLP"}])
 
     #获取片段(在操作过程中只删除某一个字段会报错)
     paragraphs = conn.segment.find({'id':blogid})
@@ -213,16 +197,7 @@ def blog():
 
     #获取实体词
     entity_people = conn.entity.find_one({'id':blogid,'state':1})
-    entity_nlp = conn.entity.find_one({'id':blogid,'state':2})
-    # infologger.logger.info('entity_people',entity_people)
-    # infologger.logger.info('entity_nlp',entity_nlp)
-    if entity_nlp:
-        if 'content' in entity_nlp.keys() and entity_nlp['content']:
-            nlpentity = entity_nlp['content']
-        else:
-            nlpentity = ''
-    else:
-        nlpentity = ''
+
     if entity_people:
         if 'content' in entity_people.keys() and entity_people['content']:
             contententity = ','.join(entity_people['content'])
@@ -235,14 +210,10 @@ def blog():
     else:
         contententity = ''
         descentity = ''
-    if entity_people and entity_nlp:
-        entitys = json.dumps([{"content":contententity,"desc":descentity,"source":"人工"},{"content":nlpentity,"source":"NLP"}])
-    elif not entity_nlp and entity_people:
-        entitys = json.dumps([{"content":contententity,"desc":descentity,"source":"人工"}])
-    elif not entity_people and entity_nlp:
-        entitys = json.dumps([{"content":nlpentity,"source":"NLP"}])
+    if entity_people:
+        entitys = json.dumps([{"content":contententity,"desc":descentity,"source":"人工"},{"content":nlp_entity,"source":"NLP"}])
     else:
-        entitys = json.dumps([])
+        entitys = json.dumps([{"content":nlp_entity,"source":"NLP"}])
     return render_template('blog.html',content=text,labels=labels,types=types,para=para,entitys=entitys)
 
 @app.route('/insertdata',methods = ['POST','GET'])
@@ -341,12 +312,15 @@ def insertdate():
                 people_content2 = []
                 people_desc2 = []
                 baidu_type = []
+                nlp_type = []
                 for t in type_data:
                     if t['source'] == '人工':
                         people_content2.append(t['content'])
                         people_desc2.append(t['desc'])
                     if t['source'] == '百度aip':
                         baidu_type = [t['content']]
+                    if t['source'] == 'NLP':
+                        nlp_type.append(t['content'])
                 if people_content2:
                     people_item_type = {'id':blogid,'content':people_content2,'desc':people_desc2,'source':'人工','state':1}
                     try:
@@ -366,6 +340,17 @@ def insertdate():
                     # print(baidu_item_type)
                 else:
                     mongo.type.remove({'id':blogid,'state':0})
+
+                if nlp_type:
+                    nlp_item_type = {'id':blogid,'content':nlp_type,'source':'NLP','state':2}
+                    try:
+                        mongo.type.update({'id':blogid,'state':2},nlp_item_type,True)
+                    except Exception as e:
+                        errorlogger.logger.error(e)
+                        return '{"code":0,"message":"入库失败"}'
+                else:
+                    mongo.type.remove({'id':blogid,'state':2})
+
             else:
                 mongo.type.remove({'id':blogid})
 
